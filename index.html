@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Todo List</h1>
+
+    <!-- タスクの入力フォーム -->
+    <input type="text" id="taskInput" placeholder="Enter a new task">
+    <button id="addTaskButton">Add Task</button>
+
+    <!-- タスクリストの表示 -->
+    <ul id="taskList"></ul>
+
+    <!-- Firebase SDKの読み込み -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
+    <script>
+        // Firebaseの設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyBEhepfXcFjJ7YI18kv56_NTKCZc5lSkik",
+            authDomain: "kensyuu-project.firebaseapp.com",
+            projectId: "kensyuu-project",
+            storageBucket: "kensyuu-project.appspot.com",
+            messagingSenderId: "805435556353",
+            appId: "1:805435556353:web:7d0641c7c00f190a75f600",
+            measurementId: "G-XJJJ6RCXLF"
+        };
+
+        // Firebaseを初期化
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // タスクを追加する関数
+        function addTaskToFirebase(taskText) {
+            db.collection("tasks").add({
+                task: taskText,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                console.log("Task added to Firebase!");
+            }).catch((error) => {
+                console.error("Error adding task: ", error);
+            });
+        }
+
+        // Firebaseからタスクを読み込む関数
+        function loadTasksFromFirebase() {
+            db.collection("tasks").orderBy("timestamp").onSnapshot((snapshot) => {
+                const taskList = document.getElementById("taskList");
+                taskList.innerHTML = "";  // リストをクリア
+                snapshot.forEach((doc) => {
+                    const task = doc.data().task;
+                    const newTask = document.createElement("li");
+                    newTask.textContent = task;
+
+                    // 削除ボタンを追加
+                    const deleteButton = document.createElement("button");
+                    deleteButton.textContent = "Delete";
+                    deleteButton.addEventListener("click", () => {
+                        doc.ref.delete().then(() => {
+                            console.log("Task deleted!");
+                        });
+                    });
+                    newTask.appendChild(deleteButton);
+
+                    taskList.appendChild(newTask);
+                });
+            });
+        }
+
+        // ページロード時にタスクをFirebaseから読み込む
+        window.addEventListener("load", loadTasksFromFirebase);
+
+        // タスク追加ボタンがクリックされたとき
+        document.getElementById("addTaskButton").addEventListener("click", () => {
+            const taskInput = document.getElementById("taskInput");
+            const taskText = taskInput.value;
+            if (taskText !== "") {
+                addTaskToFirebase(taskText);
+                taskInput.value = "";  // 入力欄をクリア
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Todo List</h1>
+
+    <!-- タスクの入力フォーム -->
+    <input type="text" id="taskInput" placeholder="Enter a new task">
+    <button id="addTaskButton">Add Task</button>
+
+    <!-- タスクリストの表示 -->
+    <ul id="taskList"></ul>
+
+    <!-- Firebase SDKの読み込み -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
+    <!-- Firestoreの初期化 -->
+    <script>
+        // Firebaseの設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyBEhepfXcFjJ7YI18kv56_NTKCZc5lSkik",
+            authDomain: "kensyuu-project.firebaseapp.com",
+            projectId: "kensyuu-project",
+            storageBucket: "kensyuu-project.appspot.com",
+            messagingSenderId: "805435556353",
+            appId: "1:805435556353:web:7d0641c7c00f190a75f600",
+            measurementId: "G-XJJJ6RCXLF"
+        };
+
+        // Firebaseを初期化
+        firebase.initializeApp(firebaseConfig);
+
+        // Firestoreを初期化
+        const db = firebase.firestore();
+    </script>
+
+    <!-- script.js ファイルをリンク -->
+    <script src="script.js"></script>
+
+</body>
+</html>
