@@ -1,0 +1,21 @@
+.calendar-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .calendar-table th,
+  .calendar-table td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .available {
+    color: green;
+    cursor: pointer;
+  }
+  
+  .unavailable {
+    color: red;
+  }
+  
