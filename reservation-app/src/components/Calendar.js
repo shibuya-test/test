@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./Calendar.css"; // スタイルを別ファイルに分けます
 
 const Calendar = () => {
-  const [selectedDate, setSelectedDate] = useState("");
-  const navigate = useNavigate(); // 予約フォームへの遷移に使います
-
+  const navigate = useNavigate();
   const daysOfWeek = [
     { day: "8 (火)", date: "2024-10-08" },
     { day: "9 (水)", date: "2024-10-09" },
@@ -22,9 +20,9 @@ const Calendar = () => {
     "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"
   ];
 
-  // サンプル予約状況データをすべて「○」に変更
+  // すべての予約状況を「○」に設定する
   const reservationData = {
-    "2024-10-08": Array(20).fill("○"), // 20個の○をすべての日付に設定
+    "2024-10-08": Array(20).fill("○"),
     "2024-10-09": Array(20).fill("○"),
     "2024-10-10": Array(20).fill("○"),
     "2024-10-11": Array(20).fill("○"),
@@ -34,8 +32,8 @@ const Calendar = () => {
   };
 
   const handleCellClick = (date, time) => {
-    setSelectedDate(`${date} ${time}`);
-    navigate(`/reservation?date=${date}&time=${time}`); // 予約フォームへ遷移
+    // 日付と時間を予約フォームに渡す
+    navigate(`/reservation?date=${date}&time=${time}`);
   };
 
   return (

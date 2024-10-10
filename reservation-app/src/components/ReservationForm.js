@@ -1,51 +1,44 @@
-// src/components/ReservationForm.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';  // Firebase設定をインポート
 
 const ReservationForm = () => {
-  // フォームの状態を管理
+  const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [reservationDate, setReservationDate] = useState('');
-  const [reservationTime, setReservationTime] = useState('');
-  const [loading, setLoading] = useState(false);  // ローディング状態を追加
-  const [error, setError] = useState(null);  // エラー状態を追加
+  const [reservationDate, setReservationDate] = useState(queryParams.get('date') || '');
+  const [reservationTime, setReservationTime] = useState(queryParams.get('time') || '');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // 予約データをFirestoreに送信する関数
   const handleSubmit = async (e) => {
-    e.preventDefault();  // フォームのデフォルト送信を無効化
-    setLoading(true);  // ローディング開始
-    setError(null);  // エラーをクリア
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
     try {
-      // Firestoreの "reservations" コレクションにドキュメントを追加
-      const docRef = await addDoc(collection(db, 'reservations'), {
-        name: name,
-        email: email,
-        reservationDate: reservationDate,
-        reservationTime: reservationTime,
+      await addDoc(collection(db, 'reservations'), {
+        name,
+        email,
+        reservationDate,
+        reservationTime,
       });
-      console.log("Document written with ID: ", docRef.id);
       alert('予約が完了しました！');
-      
-      // フォームのリセット
-      setName('');
-      setEmail('');
-      setReservationDate('');
-      setReservationTime('');
+      navigate('/'); // 予約完了後にカレンダーに戻る
     } catch (e) {
-      console.error("Error adding document: ", e);
       setError('予約に失敗しました。再度お試しください。');
     } finally {
-      setLoading(false);  // ローディング終了
+      setLoading(false);
     }
   };
 
   return (
     <div>
       <h2>予約フォーム</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}  {/* エラーメッセージの表示 */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div>
           <label>名前:</label>
@@ -54,7 +47,6 @@ const ReservationForm = () => {
             value={name} 
             onChange={(e) => setName(e.target.value)} 
             required 
-            disabled={loading}  // ローディング中は入力を無効化
           />
         </div>
         <div>
@@ -64,7 +56,6 @@ const ReservationForm = () => {
             value={email} 
             onChange={(e) => setEmail(e.target.value)} 
             required 
-            disabled={loading}
           />
         </div>
         <div>
@@ -74,7 +65,6 @@ const ReservationForm = () => {
             value={reservationDate} 
             onChange={(e) => setReservationDate(e.target.value)} 
             required 
-            disabled={loading}
           />
         </div>
         <div>
@@ -84,7 +74,6 @@ const ReservationForm = () => {
             value={reservationTime} 
             onChange={(e) => setReservationTime(e.target.value)} 
             required 
-            disabled={loading}
           />
         </div>
         <button type="submit" disabled={loading}>
