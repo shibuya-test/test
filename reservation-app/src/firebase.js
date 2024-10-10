@@ -1,21 +1,20 @@
-// Firebase SDKのインポート（モジュール方式）
-import { initializeApp } from 'firebase/app';
+// src/firebase.js
+import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
-// Firebaseの設定情報
 const firebaseConfig = {
-  apiKey: "AIzaSyBEhepfXcFjJ7YI18kv56_NTKCZc5lSkik",
-  authDomain: "kensyuu-project.firebaseapp.com",
-  projectId: "kensyuu-project",
-  storageBucket: "kensyuu-project.appspot.com",
-  messagingSenderId: "805435556353",
-  appId: "1:805435556353:web:7d0641c7c00f190a75f600",
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
-// Firebaseアプリの初期化
-const app = initializeApp(firebaseConfig);
+// Firebaseアプリが初期化されていない場合のみ初期化
+const firebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 
-// Firestoreの初期化
-const db = getFirestore(app);
+// Firestoreのインスタンスを取得
+const db = getFirestore(firebaseApp);
 
 export { db };
