@@ -1,34 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+// src/components/ReservationForm.js
+import React, { useState } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';  // Firebase設定をインポート
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const ReservationForm = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [reservationDate, setReservationDate] = useState(queryParams.get('date') || '');
-  const [reservationTime, setReservationTime] = useState(queryParams.get('time') || '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // URLから予約日と時間を取得
+  const queryParams = new URLSearchParams(location.search);
+  const reservationDate = queryParams.get('date') || '';
+  const reservationTime = queryParams.get('time') || '';
 
+  // 予約データをFirestoreに送信する関数
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
+      // Firestoreの "reservations" コレクションにドキュメントを追加
       await addDoc(collection(db, 'reservations'), {
         name,
         email,
         reservationDate,
-        reservationTime,
+        reservationTime
       });
       alert('予約が完了しました！');
-      navigate('/'); // 予約完了後にカレンダーに戻る
+
+      // フォームのリセット
+      setName('');
+      setEmail('');
+
+      // カレンダー画面に遷移
+      navigate('/calendar');
     } catch (e) {
+      console.error("Error adding document: ", e);
       setError('予約に失敗しました。再度お試しください。');
     } finally {
       setLoading(false);
@@ -63,8 +75,7 @@ const ReservationForm = () => {
           <input 
             type="date" 
             value={reservationDate} 
-            onChange={(e) => setReservationDate(e.target.value)} 
-            required 
+            disabled
           />
         </div>
         <div>
@@ -72,8 +83,7 @@ const ReservationForm = () => {
           <input 
             type="time" 
             value={reservationTime} 
-            onChange={(e) => setReservationTime(e.target.value)} 
-            required 
+            disabled
           />
         </div>
         <button type="submit" disabled={loading}>

@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+// src/components/Calendar.js
+import React, { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebaseConfig";
 import { useNavigate } from "react-router-dom";
-import "./Calendar.css"; // スタイルを別ファイルに分けます
+import "./Calendar.css";  // スタイル
 
 const Calendar = () => {
+  const [reservations, setReservations] = useState([]);
   const navigate = useNavigate();
   const daysOfWeek = [
     { day: "8 (火)", date: "2024-10-08" },
@@ -20,19 +24,25 @@ const Calendar = () => {
     "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"
   ];
 
-  // すべての予約状況を「○」に設定する
-  const reservationData = {
-    "2024-10-08": Array(20).fill("○"),
-    "2024-10-09": Array(20).fill("○"),
-    "2024-10-10": Array(20).fill("○"),
-    "2024-10-11": Array(20).fill("○"),
-    "2024-10-12": Array(20).fill("○"),
-    "2024-10-13": Array(20).fill("○"),
-    "2024-10-14": Array(20).fill("○"),
+  // Firestoreから予約データを取得
+  useEffect(() => {
+    const fetchReservations = async () => {
+      const querySnapshot = await getDocs(collection(db, 'reservations'));
+      const data = querySnapshot.docs.map((doc) => doc.data());
+      setReservations(data);
+    };
+    fetchReservations();
+  }, []);
+
+  // 予約済みか確認する関数
+  const isReserved = (date, time) => {
+    return reservations.some(
+      (res) => res.reservationDate === date && res.reservationTime === time
+    );
   };
 
+  // 日付と時間を選択して予約フォームに遷移
   const handleCellClick = (date, time) => {
-    // 日付と時間を予約フォームに渡す
     navigate(`/reservation?date=${date}&time=${time}`);
   };
 
@@ -54,7 +64,7 @@ const Calendar = () => {
               <td>{time}</td>
               {daysOfWeek.map((dayObj, index) => {
                 const dateKey = dayObj.date;
-                const status = reservationData[dateKey]?.[timeSlots.indexOf(time)] || "×"; // 予約状況がなければ "×"
+                const status = isReserved(dateKey, time) ? "×" : "○";
                 return (
                   <td
                     key={index}

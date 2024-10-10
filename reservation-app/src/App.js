@@ -1,3 +1,4 @@
+// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Calendar from './components/Calendar';
@@ -9,8 +10,9 @@ function App() {
       <div>
         <h1>予約システム</h1>
         <Routes>
-          <Route path="/" element={<Calendar />} />
+          <Route path="/calendar" element={<Calendar />} />
           <Route path="/reservation" element={<ReservationForm />} />
+          <Route path="/" element={<Calendar />} />
         </Routes>
       </div>
     </Router>
