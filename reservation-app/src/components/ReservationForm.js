@@ -1,73 +1,59 @@
-// src/components/ReservationForm.js
+// ReservationForm.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigateフックをインポート
-import { db } from '../firebase'; // Firestoreをインポート
-import { collection, addDoc } from 'firebase/firestore';
-import './ReservationForm.css';
+import { useNavigate, useLocation } from 'react-router-dom'; // ページ遷移用
+import { db } from '../firebase'; // Firestoreのデータベース
+import './ReservationForm.css'; // CSSを適用
 
 const ReservationForm = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { date, time } = location.state; // カレンダーから選択された日時を取得
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [date, setDate] = useState('');  // 予約日
-  const [time, setTime] = useState('');  // 予約時間
-  const navigate = useNavigate(); // navigate関数を取得
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Firestoreに予約情報を保存
     try {
-      // Firestoreに予約情報を保存
-      await addDoc(collection(db, 'reservations'), {
+      await db.collection('reservations').add({
         name,
         email,
         date,
         time,
       });
 
-      // 予約情報を確認ページに渡しつつ遷移する
+      // Firestoreに保存後、予約確認ページに遷移
       navigate('/confirmation', { state: { name, email, date, time } });
     } catch (error) {
-      console.error('予約の保存に失敗しました:', error);
       alert('予約の保存に失敗しました。もう一度お試しください。');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>名前:</label>
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)} // 変更を反映
-        required
-      />
-
-      <label>メールアドレス:</label>
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)} // 変更を反映
-        required
-      />
-
-      <label>予約日:</label>
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)} // 変更を反映
-        required
-      />
-
-      <label>予約時間:</label>
-      <input
-        type="time"
-        value={time}
-        onChange={(e) => setTime(e.target.value)} // 変更を反映
-        required
-      />
-
-      <button type="submit">予約する</button>
-    </form>
+    <div>
+      <h1>予約フォーム</h1>
+      <form onSubmit={handleSubmit}>
+        <label>名前:</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+        />
+        <label>メールアドレス:</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <label>予約日: {date}</label>
+        <label>予約時間: {time}</label>
+        <button type="submit">予約する</button>
+      </form>
+    </div>
   );
 };
 

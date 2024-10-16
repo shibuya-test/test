@@ -1,40 +1,21 @@
-/* フォームの基本設定 */
+/* ReservationForm.css */
 form {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 400px;  /* 最大幅を設定してレスポンシブ対応 */
+  width: 300px;
   margin: 0 auto;
-  padding: 20px;
-  font-size: 16px;  /* フォーム全体にデフォルトのフォントサイズを適用 */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
 }
 
-/* ラベルの設定 */
 label {
   margin-bottom: 10px;
-  font-weight: bold;
 }
 
-/* 入力フィールドの設定 */
 input {
-  padding: 10px;
+  padding: 5px;
   font-size: 16px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
+  margin-top: 5px;
 }
 
-/* フォーカス時のスタイル */
-input:focus {
-  border-color: #4CAF50;
-  outline: none;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-}
-
-/* ボタンの設定 */
 button {
   padding: 10px;
   font-size: 16px;
@@ -42,22 +23,8 @@ button {
   color: white;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
 }
 
 button:hover {
   background-color: #45a049;
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 600px) {
-  form {
-    padding: 15px;
-  }
-
-  button {
-    padding: 12px;
-    font-size: 18px;
-  }
 }

@@ -1,17 +1,14 @@
+// Confirmation.js
 import React from 'react';
-import { useLocation } from 'react-router-dom'; // 予約情報を受け取るためにuseLocationを使用
+import { useLocation } from 'react-router-dom';
 
 const Confirmation = () => {
-  const location = useLocation(); // location.state から予約情報を取得
-  const { name, email, date, time } = location.state || {}; // デフォルトで空オブジェクトを使う
-
-  if (!name || !email || !date || !time) {
-    return <p>予約情報がありません。</p>;
-  }
+  const location = useLocation();
+  const { name, email, date, time } = location.state;
 
   return (
     <div>
-      <h2>予約が完了しました！</h2>
+      <h1>予約が完了しました</h1>
       <p>名前: {name}</p>
       <p>メールアドレス: {email}</p>
       <p>予約日: {date}</p>

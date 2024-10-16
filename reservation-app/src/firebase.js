@@ -1,20 +1,18 @@
-// src/firebase.js
-import { initializeApp, getApps } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/firestore';
 
+// Firebaseの設定
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBEhepfXcFjJ7YI18kv56_NTKCZc5lsKik",
+  authDomain: "kensyuu-project.firebaseapp.com",
+  projectId: "kensyuu-project",
+  storageBucket: "kensyuu-project.appspot.com",
+  messagingSenderId: "805435556353",
+  appId: "1:805435556353:web:7d0641c7c00f190a75f600",
+  measurementId: "G-XJJJ6RCXLF"
 };
 
-// Firebaseアプリが初期化されていない場合のみ初期化
-const firebaseApp = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
-
-// Firestoreのインスタンスを取得
-const db = getFirestore(firebaseApp);
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const db = firebaseApp.firestore();
 
 export { db };

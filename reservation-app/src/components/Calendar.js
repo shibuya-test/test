@@ -1,13 +1,15 @@
 // src/components/Calendar.js
-import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebaseConfig";
-import { useNavigate } from "react-router-dom";
-import "./Calendar.css";  // スタイル
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // ページ遷移用
 
 const Calendar = () => {
-  const [reservations, setReservations] = useState([]);
   const navigate = useNavigate();
+
+  // カレンダーの時間帯を選択する関数
+  const handleTimeSelect = (date, time) => {
+    navigate('/reservation-form', { state: { date, time } });
+  };
+
   const daysOfWeek = [
     { day: "8 (火)", date: "2024-10-08" },
     { day: "9 (水)", date: "2024-10-09" },
@@ -21,35 +23,16 @@ const Calendar = () => {
   const timeSlots = [
     "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
     "13:00", "13:30", "14:00", "14:30", "15:00", "15:30",
-    "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30"
+    "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00", "19:30", "20:00"
   ];
 
-  // Firestoreから予約データを取得
-  useEffect(() => {
-    const fetchReservations = async () => {
-      const querySnapshot = await getDocs(collection(db, 'reservations'));
-      const data = querySnapshot.docs.map((doc) => doc.data());
-      setReservations(data);
-    };
-    fetchReservations();
-  }, []);
-
-  // 予約済みか確認する関数
-  const isReserved = (date, time) => {
-    return reservations.some(
-      (res) => res.reservationDate === date && res.reservationTime === time
-    );
-  };
-
-  // 日付と時間を選択して予約フォームに遷移
-  const handleCellClick = (date, time) => {
-    navigate(`/reservation?date=${date}&time=${time}`);
-  };
+  // 予約済みかどうかをランダムで決める（○を多めに）
+  const getRandomStatus = () => Math.random() < 0.7 ? "○" : "×";  // 70%が○になるように設定
 
   return (
     <div>
       <h1>予約カレンダー</h1>
-      <table className="calendar-table">
+      <table>
         <thead>
           <tr>
             <th>時間</th>
@@ -64,12 +47,12 @@ const Calendar = () => {
               <td>{time}</td>
               {daysOfWeek.map((dayObj, index) => {
                 const dateKey = dayObj.date;
-                const status = isReserved(dateKey, time) ? "×" : "○";
+                const status = getRandomStatus(); // ランダムに○か×を設定
                 return (
                   <td
                     key={index}
                     className={status === "○" ? "available" : "unavailable"}
-                    onClick={status === "○" ? () => handleCellClick(dateKey, time) : null}
+                    onClick={status === "○" ? () => handleTimeSelect(dateKey, time) : null}
                   >
                     {status}
                   </td>
